@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    command: ./start.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+      - DB_ENGINE=${DB_ENGINE:-sqlite}
+      - EXTERNAL_API_BASE_URL=${EXTERNAL_API_BASE_URL:-https://jsonplaceholder.typicode.com}
+      - HF_API_TOKEN=${HF_API_TOKEN:-}

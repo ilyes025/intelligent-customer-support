@@ -1,0 +1,180 @@
+{
+  "run_at": "2026-09-05T09:57:37.555654+00:00",
+  "n_cases": 16,
+  "elapsed_seconds": 0.077,
+  "metrics": {
+    "context_recall": 0.938,
+    "avg_faithfulness": 1.0,
+    "avg_answer_relevancy": 0.771,
+    "clarification_accuracy": 1.0,
+    "no_match_escalation_accuracy": 1.0,
+    "decision_distribution": {
+      "auto_send": 11,
+      "clarification_requested": 3,
+      "pending_validation": 1,
+      "escalated": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "q1",
+      "query": "How do I get my money back for something I bought?",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q2",
+      "query": "I see two charges for the same order on my card",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q3",
+      "query": "Where is my order right now?",
+      "decision": "clarification_requested",
+      "context_recall_hit": true,
+      "faithfulness_score": null,
+      "answer_relevancy": 0.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q4",
+      "query": "The tracking says delivered but there is nothing on my porch",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q5",
+      "query": "I forgot my password and can't get back into my account",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q6",
+      "query": "I keep getting an error when I try to pay at checkout",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q7",
+      "query": "How can I change the email address on my account?",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 0.6666666666666666,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q8",
+      "query": "I want to permanently close my account",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q9",
+      "query": "What time is customer service available?",
+      "decision": "clarification_requested",
+      "context_recall_hit": true,
+      "faithfulness_score": null,
+      "answer_relevancy": 0.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q10",
+      "query": "What is your general return policy?",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q11",
+      "query": "my card got billed 2 times please help",
+      "decision": "pending_validation",
+      "context_recall_hit": false,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 0.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q12",
+      "query": "package shows delivered but it never arrived at my door",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q13",
+      "query": "can't log in, forgot my login password",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q14",
+      "query": "what are your weekend support hours",
+      "decision": "auto_send",
+      "context_recall_hit": true,
+      "faithfulness_score": 1.0,
+      "answer_relevancy": 0.6666666666666666,
+      "expect_clarification": false,
+      "expect_no_match": false
+    },
+    {
+      "id": "q15",
+      "query": "help",
+      "decision": "clarification_requested",
+      "context_recall_hit": true,
+      "faithfulness_score": null,
+      "answer_relevancy": 1.0,
+      "expect_clarification": true,
+      "expect_no_match": false
+    },
+    {
+      "id": "q16",
+      "query": "does the app support cryptocurrency payments and NFT rewards",
+      "decision": "escalated",
+      "context_recall_hit": true,
+      "faithfulness_score": null,
+      "answer_relevancy": 1.0,
+      "expect_clarification": false,
+      "expect_no_match": true
+    }
+  ]
+}

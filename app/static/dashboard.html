@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support Agent — Ops Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#12161c; --panel:#181e27; --panel-raised:#1f2733; --border:#2a323d;
+    --text:#e5e9ef; --muted:#8b96a5; --muted-dim:#5c6675;
+    --teal:#5fa895; --amber:#d9a441; --brick:#c9634f; --sage:#7fae6f;
+    --mono: "IBM Plex Mono", monospace; --sans: "IBM Plex Sans", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text); font-family:var(--sans);
+    line-height:1.5; padding-bottom:60px;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    padding:20px 32px; border-bottom:1px solid var(--border); background:var(--panel);
+    flex-wrap:wrap;
+  }
+  .topbar h1{font-size:1.15em; font-weight:600; margin:0;}
+  .topbar .sub{color:var(--muted); font-size:0.85em; margin-top:2px;}
+  .auth-row{display:flex; gap:8px; align-items:center;}
+  .auth-row input{
+    background:var(--panel-raised); border:1px solid var(--border); color:var(--text);
+    padding:8px 12px; border-radius:6px; font-family:var(--mono); font-size:0.82em; width:280px;
+  }
+  .auth-row button, .refresh-btn{
+    background:var(--teal); color:#0b1512; border:none; padding:8px 16px; border-radius:6px;
+    font-weight:600; font-size:0.85em; cursor:pointer; font-family:var(--sans);
+  }
+  .auth-row button:hover, .refresh-btn:hover{filter:brightness(1.1);}
+  main{max-width:1180px; margin:0 auto; padding:32px;}
+  .state-msg{color:var(--muted); padding:60px 0; text-align:center; font-size:0.95em;}
+  .state-msg.error{color:var(--brick);}
+
+  section{margin-bottom:40px;}
+  .section-head{
+    display:flex; align-items:baseline; gap:10px; margin-bottom:16px;
+    border-bottom:1px solid var(--border); padding-bottom:10px;
+  }
+  .section-head h2{font-size:1em; font-weight:600; margin:0; letter-spacing:0.01em;}
+  .section-head .tag{color:var(--muted-dim); font-size:0.78em; font-family:var(--mono);}
+
+  .kpi-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden;}
+  .kpi{background:var(--panel); padding:18px 20px; border-left:3px solid var(--teal);}
+  .kpi.warn{border-left-color:var(--amber);}
+  .kpi.danger{border-left-color:var(--brick);}
+  .kpi.neutral{border-left-color:var(--muted-dim);}
+  .kpi .label{color:var(--muted); font-size:0.78em; margin-bottom:8px;}
+  .kpi .value{font-family:var(--mono); font-size:1.7em; font-weight:600;}
+  .kpi .value .unit{font-size:0.5em; color:var(--muted); margin-left:4px;}
+
+  .charts-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:20px;}
+  @media (max-width:820px){.charts-grid{grid-template-columns:1fr;}}
+  .chart-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:20px;
+  }
+  .chart-card h3{font-size:0.85em; color:var(--muted); font-weight:500; margin:0 0 14px 0;}
+  .chart-card canvas{max-height:220px;}
+
+  table.eval-table{width:100%; border-collapse:collapse; font-size:0.88em;}
+  table.eval-table th, table.eval-table td{
+    text-align:left; padding:8px 10px; border-bottom:1px solid var(--border);
+  }
+  table.eval-table th{color:var(--muted); font-weight:500; font-size:0.85em;}
+  table.eval-table td.mono, table.eval-table th.mono{font-family:var(--mono);}
+  .pill{display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.78em; font-family:var(--mono);}
+  .pill.auto_send{background:rgba(95,168,149,0.18); color:var(--teal);}
+  .pill.pending_validation{background:rgba(217,164,65,0.18); color:var(--amber);}
+  .pill.escalated{background:rgba(201,99,79,0.18); color:var(--brick);}
+  .pill.clarification_requested{background:rgba(139,150,165,0.18); color:var(--muted);}
+
+  .no-eval{
+    background:var(--panel); border:1px dashed var(--border); border-radius:8px;
+    padding:24px; color:var(--muted); font-size:0.88em; text-align:center;
+  }
+  .no-eval code{background:var(--panel-raised); padding:2px 6px; border-radius:4px; font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>Support Agent — Ops Dashboard</h1>
+    <div class="sub">Live routing stats + latest offline eval run</div>
+  </div>
+  <div class="auth-row">
+    <input id="token-input" type="password" placeholder="Staff access token (Bearer JWT)" autocomplete="off">
+    <button onclick="loadDashboard()">Load</button>
+    <button class="refresh-btn" onclick="loadDashboard()" title="Refresh">&#8635;</button>
+  </div>
+</div>
+
+<main>
+  <div id="content">
+    <div class="state-msg">Paste a staff account's access token above (from <code>POST /auth/login</code>) and click Load.</div>
+  </div>
+</main>
+
+<script>
+const API_BASE = window.location.origin;
+
+function pct(x) {
+  if (x === null || x === undefined) return '—';
+  return (x * 100).toFixed(0) + '%';
+}
+function num(x, digits=2) {
+  if (x === null || x === undefined) return '—';
+  return Number(x).toFixed(digits);
+}
+
+async function loadDashboard() {
+  const token = document.getElementById('token-input').value.trim();
+  const content = document.getElementById('content');
+  if (!token) {
+    content.innerHTML = '<div class="state-msg error">Enter a staff access token first.</div>';
+    return;
+  }
+  sessionStorage.setItem('dashboard_token', token);
+  content.innerHTML = '<div class="state-msg">Loading metrics…</div>';
+
+  let data;
+  try {
+    const res = await fetch(`${API_BASE}/support/metrics/summary`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.status === 403) {
+      content.innerHTML = '<div class="state-msg error">This token is not a staff account (403 Forbidden).</div>';
+      return;
+    }
+    if (res.status === 401) {
+      content.innerHTML = '<div class="state-msg error">Token rejected or expired (401 Unauthorized).</div>';
+      return;
+    }
+    if (!res.ok) {
+      content.innerHTML = `<div class="state-msg error">Request failed (${res.status}).</div>`;
+      return;
+    }
+    data = await res.json();
+  } catch (err) {
+    content.innerHTML = `<div class="state-msg error">Could not reach the API: ${err.message}</div>`;
+    return;
+  }
+
+  render(data);
+}
+
+function render(data) {
+  const live = data.live;
+  const evalData = data.eval;
+
+  const decisionColors = {
+    auto_send: '#5fa895',
+    pending_validation: '#d9a441',
+    escalated: '#c9634f',
+    clarification_requested: '#8b96a5'
+  };
+
+  document.getElementById('content').innerHTML = `
+    <section>
+      <div class="section-head"><h2>Live production</h2><span class="tag">from agent_decision_logs</span></div>
+      <div class="kpi-row">
+        <div class="kpi neutral"><div class="label">Total decisions</div><div class="value">${live.total_decisions}</div></div>
+        <div class="kpi"><div class="label">Auto-send rate</div><div class="value">${pct(live.auto_send_rate)}</div></div>
+        <div class="kpi danger"><div class="label">Escalation rate</div><div class="value">${pct(live.escalation_rate)}</div></div>
+        <div class="kpi ${live.avg_faithfulness !== null && live.avg_faithfulness < 0.55 ? 'warn' : ''}">
+          <div class="label">Avg faithfulness</div><div class="value">${num(live.avg_faithfulness)}</div>
+        </div>
+        <div class="kpi neutral"><div class="label">Ticket resolution rate</div><div class="value">${pct(live.tickets.resolution_rate)}</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>Decision distribution</h3>
+          <canvas id="decision-chart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Avg confidence by intent</h3>
+          <canvas id="intent-chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <h3>Faithfulness score over time (per decision, chronological)</h3>
+        <canvas id="faithfulness-chart"></canvas>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Offline eval — golden dataset</h2><span class="tag">from eval/run_eval.py</span></div>
+      ${evalData ? renderEval(evalData) : `
+        <div class="no-eval">
+          No eval run found yet. Run <code>python -m eval.run_eval</code> from the project root
+          to populate this section.
+        </div>`}
+    </section>
+  `;
+
+  new Chart(document.getElementById('decision-chart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(live.decision_distribution),
+      datasets: [{
+        data: Object.values(live.decision_distribution),
+        backgroundColor: Object.keys(live.decision_distribution).map(k => decisionColors[k] || '#8b96a5'),
+        borderWidth: 0
+      }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { color: '#e5e9ef', font: { family: 'IBM Plex Sans', size: 11 } } } }
+    }
+  });
+
+  const intentEntries = Object.entries(live.avg_confidence_by_intent || {});
+  new Chart(document.getElementById('intent-chart'), {
+    type: 'bar',
+    data: {
+      labels: intentEntries.map(([k]) => k),
+      datasets: [{
+        data: intentEntries.map(([, v]) => v),
+        backgroundColor: '#5fa895',
+        borderRadius: 4,
+        maxBarThickness: 40
+      }]
+    },
+    options: {
+      scales: {
+        y: { min: 0, max: 1, ticks: { color: '#8b96a5' }, grid: { color: '#2a323d' } },
+        x: { ticks: { color: '#e5e9ef' }, grid: { display: false } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  const faithPoints = live.faithfulness_over_time || [];
+  new Chart(document.getElementById('faithfulness-chart'), {
+    type: 'line',
+    data: {
+      labels: faithPoints.map((_, i) => i + 1),
+      datasets: [{
+        data: faithPoints.map(p => p.faithfulness_score),
+        borderColor: '#5fa895',
+        backgroundColor: 'rgba(95,168,149,0.12)',
+        fill: true,
+        tension: 0.25,
+        pointRadius: 2
+      }]
+    },
+    options: {
+      scales: {
+        y: { min: 0, max: 1, ticks: { color: '#8b96a5' }, grid: { color: '#2a323d' } },
+        x: { ticks: { color: '#5c6675' }, grid: { display: false }, title: { display: true, text: 'decision #', color: '#8b96a5' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function renderEval(evalData) {
+  const m = evalData.metrics;
+  const rows = evalData.cases.map(c => `
+    <tr>
+      <td class="mono">${c.id}</td>
+      <td>${c.query}</td>
+      <td><span class="pill ${c.decision}">${c.decision}</span></td>
+      <td class="mono">${c.context_recall_hit ? '✓' : '✗'}</td>
+      <td class="mono">${num(c.faithfulness_score)}</td>
+      <td class="mono">${num(c.answer_relevancy)}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="kpi-row" style="margin-bottom:20px;">
+      <div class="kpi"><div class="label">Context recall</div><div class="value">${pct(m.context_recall)}</div></div>
+      <div class="kpi"><div class="label">Avg faithfulness</div><div class="value">${num(m.avg_faithfulness)}</div></div>
+      <div class="kpi"><div class="label">Avg answer relevancy</div><div class="value">${num(m.avg_answer_relevancy)}</div></div>
+      <div class="kpi neutral"><div class="label">Clarification accuracy</div><div class="value">${pct(m.clarification_accuracy)}</div></div>
+      <div class="kpi neutral"><div class="label">No-match escalation accuracy</div><div class="value">${pct(m.no_match_escalation_accuracy)}</div></div>
+    </div>
+    <table class="eval-table">
+      <thead><tr><th class="mono">id</th><th>query</th><th>decision</th><th class="mono">recall hit</th><th class="mono">faithfulness</th><th class="mono">relevancy</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = sessionStorage.getItem('dashboard_token');
+  if (saved) {
+    document.getElementById('token-input').value = saved;
+    loadDashboard();
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+# Python virtual environments - never ship these, install deps fresh in the image
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache/build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Hugging Face / sentence-transformers model cache - re-downloaded in the
+# image on first use, or better, baked in via a RUN step in the Dockerfile
+# rather than copied from the host
+.cache/
+**/huggingface/
+**/sentence_transformers/
+
+# Version control
+.git/
+.gitignore
+
+# Local env / secrets - never bake these into an image
+.env
+.env.*
+!.env.example
+
+# Editor/OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local databases and logs
+*.sqlite3
+*.db
+*.log
+
+# Test artifacts
+.coverage
+htmlcov/

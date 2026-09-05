@@ -1,0 +1,116 @@
+[
+  {
+    "id": "q1",
+    "query": "How do I get my money back for something I bought?",
+    "category": "billing",
+    "expected_kb_title": "How to request a refund",
+    "expected_answer_keywords": ["order history", "30 days", "refund", "5-7 business days"]
+  },
+  {
+    "id": "q2",
+    "query": "I see two charges for the same order on my card",
+    "category": "billing",
+    "expected_kb_title": "Why was I charged twice?",
+    "expected_answer_keywords": ["authorization hold", "bank", "duplicate", "3-5 business days"]
+  },
+  {
+    "id": "q3",
+    "query": "Where is my order right now?",
+    "category": "shipping",
+    "expected_kb_title": "Tracking your package",
+    "expected_answer_keywords": ["tracking link", "email", "ships"]
+  },
+  {
+    "id": "q4",
+    "query": "The tracking says delivered but there is nothing on my porch",
+    "category": "shipping",
+    "expected_kb_title": "My package is marked delivered but I don't have it",
+    "expected_answer_keywords": ["delivered", "neighbors", "carrier"]
+  },
+  {
+    "id": "q5",
+    "query": "I forgot my password and can't get back into my account",
+    "category": "technical",
+    "expected_kb_title": "Resetting your password",
+    "expected_answer_keywords": ["forgot password", "login page", "reset"]
+  },
+  {
+    "id": "q6",
+    "query": "I keep getting an error when I try to pay at checkout",
+    "category": "technical",
+    "expected_kb_title": "The website shows an error when I check out",
+    "expected_answer_keywords": ["checkout", "error", "browser", "cache"]
+  },
+  {
+    "id": "q7",
+    "query": "How can I change the email address on my account?",
+    "category": "account",
+    "expected_kb_title": "How to update your account email",
+    "expected_answer_keywords": ["account settings", "email", "verify"]
+  },
+  {
+    "id": "q8",
+    "query": "I want to permanently close my account",
+    "category": "account",
+    "expected_kb_title": "How to delete your account",
+    "expected_answer_keywords": ["delete", "account", "permanent"]
+  },
+  {
+    "id": "q9",
+    "query": "What time is customer service available?",
+    "category": "general",
+    "expected_kb_title": "Customer support hours",
+    "expected_answer_keywords": ["hours", "support", "monday", "weekday"]
+  },
+  {
+    "id": "q10",
+    "query": "What is your general return policy?",
+    "category": "general",
+    "expected_kb_title": "Return policy overview",
+    "expected_answer_keywords": ["return", "days", "condition"]
+  },
+  {
+    "id": "q11",
+    "query": "my card got billed 2 times please help",
+    "category": "billing",
+    "expected_kb_title": "Why was I charged twice?",
+    "expected_answer_keywords": ["duplicate", "authorization hold"]
+  },
+  {
+    "id": "q12",
+    "query": "package shows delivered but it never arrived at my door",
+    "category": "shipping",
+    "expected_kb_title": "My package is marked delivered but I don't have it",
+    "expected_answer_keywords": ["delivered", "neighbors", "carrier"]
+  },
+  {
+    "id": "q13",
+    "query": "can't log in, forgot my login password",
+    "category": "technical",
+    "expected_kb_title": "Resetting your password",
+    "expected_answer_keywords": ["forgot password", "reset", "login page"]
+  },
+  {
+    "id": "q14",
+    "query": "what are your weekend support hours",
+    "category": "general",
+    "expected_kb_title": "Customer support hours",
+    "expected_answer_keywords": ["hours", "weekend", "support"]
+  },
+  {
+    "id": "q15",
+    "query": "help",
+    "category": null,
+    "expected_kb_title": null,
+    "expected_answer_keywords": [],
+    "expect_clarification": true
+  },
+  {
+    "id": "q16",
+    "query": "does the app support cryptocurrency payments and NFT rewards",
+    "category": null,
+    "expected_kb_title": null,
+    "expected_answer_keywords": [],
+    "expect_no_match": true
+  }
+]

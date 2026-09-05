@@ -1,0 +1,42 @@
+# This file mirrors the dependency specifiers in pyproject.toml
+# (main dependencies + the "dev" extra), using minimum-version constraints
+# rather than an exact freeze, so pip resolves versions compatible with
+# whatever Python/platform actually builds the image (the Dockerfile uses
+# python:3.11-alpine / musllinux).
+#
+# Regenerate a fully pinned lock file (recommended for prod) with either:
+#   uv pip compile pyproject.toml -o requirements.txt --extra dev
+# run from an environment using the SAME Python version as the Dockerfile.
+
+# --- main dependencies ---
+fastapi>=0.110.0
+uvicorn>=0.29.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.1
+sqlalchemy>=2.0.28
+alembic>=1.13.1
+aiosqlite>=0.19.0
+asyncpg>=0.29.0
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.0.0
+python-multipart>=0.0.9
+email-validator>=2.1.1
+python-dotenv>=1.0.1
+httpx>=0.27.0
+rank-bm25>=0.2.2
+# --- local embeddings (hybrid retrieval) ---
+# CPU-only torch wheels (no bundled CUDA/cuDNN) - much smaller download
+# than the default PyPI torch build, which assumes GPU support.
+--extra-index-url https://download.pytorch.org/whl/cpu
+sentence-transformers>=2.2.0
+
+# --- dev / test dependencies ---
+pre-commit>=4.2.0
+black>=24.3.0
+coverage>=7.9.1
+isort>=5.13.2
+mypy>=1.9.0
+pytest>=8.0.2
+pytest-asyncio>=0.26.0
+pytest-cov>=6.2.1
+
